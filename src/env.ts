@@ -1,0 +1,2 @@
+export const REACT_APP_SUPABASE_URL= 'https://bxtprlomknscsxldwweq.supabase.co';
+export const REACT_APP_SUPABASE_ANON_KEY= 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4dHBybG9ta25zY3N4bGR3d2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgwMzc0NzgsImV4cCI6MjAzMzYxMzQ3OH0.QM7RnTw-IN_0xKc8u7NdNF96-C_FhnsaseicDsnQ4eY';
