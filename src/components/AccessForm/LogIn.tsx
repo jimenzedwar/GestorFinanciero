@@ -2,21 +2,51 @@ import { useState } from "react";
 import { Access } from "./AccessForm";
 
 import { client } from "../../supabase/client";
+import { useNavigate } from "react-router-dom";
+
+const pw = /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9]{8,}$/
+const em = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]{1,63}@[\w-.]+\.[a-zA-Z]{2,}$/
 
 const LogIn = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => void }) => {
   const [user, setUser] = useState({
     email: '',
     password: ''
   })
+
+  const [formErrors, setFormErrors] = useState({
+    email: '',
+    password: '',
+    data: ''
+  })
+  const navigate = useNavigate()
+
   const handleSignupClick = () => {
     onAccessChange('signup');
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setUser({ ...user, [name]: value });
+  
+  const handleErrors = (email: string, password: string) => {
+    let emailError = '';
+
+    if (!email.match(em)) {
+      emailError = 'Introduce un correo válido (ejemplo@mail.com).';
+    }
+
+    let passwordError = '';
+    if (!password.match(pw)) {
+      passwordError = 'Introduce una contraseña alfanumérica y mínimo 8 caracteres.';
+    }
+
+    setFormErrors({ ...formErrors, email: emailError, password: passwordError });
   };
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+
+    setUser({ ...user, [name]: value });
+    handleErrors(value, user.password);
+    handleErrors(user.email, value);
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -25,10 +55,11 @@ const LogIn = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => void
         email: user.email,
         password: user.password,
       })
+      navigate("/")
     } catch (error) {
-      console.log(error)
+      setFormErrors({...formErrors, data: "Alguno de los datos no son correctos"})
     }
-    
+     //TODO See Error in invalid credentials and acces
   };
 
 
@@ -50,7 +81,9 @@ const LogIn = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => void
             name="email"
             value={user.email}
             onChange={handleChange}
+            onBlur={() => handleErrors(user.email, user.password)}
           />
+          <p className=" text-xs text-red-600 font-sans">{formErrors.email}</p>
         </div>
         <div className="mb-5">
           <label htmlFor="password" className="block mb-1 text-sm">Contraseña</label>
@@ -62,9 +95,12 @@ const LogIn = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => void
             name="password"
             value={user.password}
             onChange={handleChange}
+            onBlur={() => handleErrors(user.email, user.password)}
           />
+          <p className=" text-xs text-red-600 font-sans mb-5">{formErrors.password}</p>
         </div>
-        <button type="submit" className="text-white bg-[#587DBD] hover:bg-[#5e88d2] font-medium rounded-lg text-sm px-5 py-2.5 text-center">Acceder</button>
+          <p className=" text-xs text-red-600 font-sans mb-5">{formErrors.data}</p>
+        <button type="submit" className="text-white bg-[#587DBD] hover:bg-[#5e88d2] font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:bg-slate-300 disabled:cursor-not-allowed" disabled={formErrors.email != "" || formErrors.password != "" || user.email == "" || user.password == "" ? true : false}>Acceder</button>
       </form>
 
           <p className='font-[520] text-center ssm:text-[1.3rem]'>¿No tienes una cuenta? <button className='text-[#587DBD]' onClick={handleSignupClick}>Crea una aquí</button></p>

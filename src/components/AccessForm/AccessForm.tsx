@@ -11,10 +11,12 @@ const AccessForm = () => {
     setAccess(newAccess);
   };
 
+
+
   return (
     <div className="h-full w-full mt-[25%] lg:mt-[10%]">
       <div className={`${access === 'login' ? "hidden" : "block"}`}>
-        <SignUp onAccessChange={handleAccessChange} />
+        <SignUp onAccessChange={handleAccessChange}/>
       </div>
       <div className={`${access === 'signup' ? "hidden" : "block"}`}>
         <LogIn onAccessChange={handleAccessChange} />
