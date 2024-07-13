@@ -1,24 +1,45 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Access } from "./AccessForm";
 
 import { client } from "../../supabase/client";
 import { useNavigate } from "react-router-dom";
+import SetUser from "../Utils/setUserFunction";
+//todo setUset function
 
 const pw = /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9]{8,}$/
 const em = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]{1,63}@[\w-.]+\.[a-zA-Z]{2,}$/
 
+const response = await client.auth.getUser()
+
 const LogIn = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => void }) => {
+
+
+  
+  
   const [user, setUser] = useState({
     email: '',
     password: ''
   })
+
+
 
   const [formErrors, setFormErrors] = useState({
     email: '',
     password: '',
     data: ''
   })
+
+  
   const navigate = useNavigate()
+  
+  
+  useEffect(() => {
+    if(response.data.user) {
+        navigate("/")
+    }
+    }, [])
+
+
 
   const handleSignupClick = () => {
     onAccessChange('signup');
@@ -40,6 +61,10 @@ const LogIn = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => void
     setFormErrors({ ...formErrors, email: emailError, password: passwordError });
   };
 
+
+
+
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
@@ -47,8 +72,13 @@ const LogIn = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => void
     handleErrors(value, user.password);
     handleErrors(user.email, value);
   };
+
+
+
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
         await client.auth.signInWithPassword({
@@ -56,11 +86,14 @@ const LogIn = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => void
         password: user.password,
       })
       navigate("/")
+
     } catch (error) {
       setFormErrors({...formErrors, data: "Alguno de los datos no son correctos"})
     }
-     //TODO See Error in invalid credentials and acces
   };
+
+
+
 
 
     return (

@@ -14,17 +14,22 @@ const SignUp = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => voi
     email: '',
     password: ''
   })
+  
 
   const [formErrors, setFormErrors] = useState({
     email: '',
     password: ''
   })
+
+
   const navigate = useNavigate()
 
 
   const handleLogInClick = () => {
     onAccessChange('login');
   };
+
+
 
   const handleErrors = (email: string, password: string) => {
     let emailError = '';
@@ -44,6 +49,7 @@ const SignUp = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => voi
     setFormErrors({ ...formErrors, email: emailError, password: passwordError });
   };
 
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
@@ -54,6 +60,9 @@ const SignUp = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => voi
   };
 
 
+
+
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -85,7 +94,7 @@ return (
     <label htmlFor="email" className="block mb-1 text-sm">Nombre</label>
     <input
             type="text"
-            id="userName"
+            id="newUserName"
             className="bg-gray-50 border border-GF-100 text-sm rounded-lg block w-full p-2.5"
             placeholder="Usuario"
             required
@@ -98,7 +107,7 @@ return (
     <label htmlFor="email" className="block mb-1 text-sm">Correo</label>
     <input
             type="email"
-            id="email"
+            id="newEmail"
             className="bg-gray-50 border border-GF-100 text-sm rounded-lg block w-full p-2.5"
             placeholder="ejemplo@mail.com"
             required
@@ -113,7 +122,7 @@ return (
     <label htmlFor="password" className="block mb-1 text-sm">Contraseña</label>
     <input
             type="password"
-            id="password"
+            id="newPassword"
             className="bg-gray-50 border border-GF-100 text-sm rounded-lg block w-full p-2.5"
             required
             name="password"
