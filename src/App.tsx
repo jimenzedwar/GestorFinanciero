@@ -3,14 +3,17 @@ import './App.css'
 import { useEffect } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 import AccessForm from './components/AccessForm/AccessForm'
-import Home from './components/Home/Home'
+import Home from './components/Reports/Reports'
 import NotFound from './components/NotFound/NotFound'
 import { client } from './supabase/client'
+import Incomes from './components/Incomes/Incomes'
+import Expenses from './components/Expenses/Expenses'
+import Navbar from './components/Utils/Navbar'
 function App() {
   const navigate = useNavigate()
 
 useEffect(() => {
-client.auth.onAuthStateChange((event, session) => {
+client.auth.onAuthStateChange((session) => {
   if(!session) {
     navigate('/login')
   }
@@ -20,11 +23,12 @@ client.auth.onAuthStateChange((event, session) => {
     <div className=''>
       <Routes>
         <Route path='/' element={<Home/>}/>
-        <Route path='/income' element={<Home/>}/> //TODO CHANGE THE COMPONENT
-        <Route path='/expenses' element={<Home/>}/> //TODO CHANGE THE COMPONENT
+        <Route path='/incomes' element={<Incomes/>}/>
+        <Route path='/expenses' element={<Expenses/>}/>
         <Route path='/login' element={<AccessForm/>}/>
         <Route path='*' element={<NotFound/>}/> //TODO MAKE A PAGE 404
       </Routes>
+      <Navbar/>
       </div>
   )
 }

@@ -3,7 +3,6 @@ import { Access } from "./AccessForm";
 
 import { client } from "../../supabase/client";
 import { useNavigate } from "react-router-dom";
-import SetUser from "../Utils/setUserFunction";
 //todo setUset function
 
 const pw = /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9]{8,}$/
