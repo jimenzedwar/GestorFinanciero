@@ -28,7 +28,7 @@ const isActiveLogin = location.pathname === "/login"
         <Route path='/incomes' element={<Incomes/>}/>
         <Route path='/expenses' element={<Expenses/>}/>
         <Route path='/login' element={<AccessForm/>}/>
-        <Route path='*' element={<NotFound/>}/> //TODO MAKE A PAGE 404
+        <Route path='*' element={<NotFound/>}/>
       </Routes>
       <div className={`${isActiveLogin ? "hidden" :'block'}`}>
       <Navbar/>
