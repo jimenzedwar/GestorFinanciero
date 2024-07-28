@@ -1,51 +1,40 @@
 import { useEffect, useState } from "react";
 import { Access } from "./AccessForm";
-
 import { client } from "../../supabase/client";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-//todo setUset function
 
-const pw = /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9]{8,}$/
-const em = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]{1,63}@[\w-.]+\.[a-zA-Z]{2,}$/
-
-const response = await client.auth.getUser()
+const pw = /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9]{8,}$/;
+const em = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]{1,63}@[\w-.]+\.[a-zA-Z]{2,}$/;
 
 const LogIn = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => void }) => {
-
-
-  
-  
   const [user, setUser] = useState({
     email: '',
     password: ''
-  })
-
-
+  });
 
   const [formErrors, setFormErrors] = useState({
     email: '',
     password: '',
     data: ''
-  })
+  });
 
-  
-  const navigate = useNavigate()
-  
-  
+  const navigate = useNavigate();
+
   useEffect(() => {
-    if(response.data.user) {
-        navigate("/")
-    }
-    }, [])
-
-
+    const fetchUser = async () => {
+      const response = await client.auth.getUser();
+      if (response.data.user) {
+        navigate("/");
+      }
+    };
+    fetchUser();
+  }, [navigate]);
 
   const handleSignupClick = () => {
     onAccessChange('signup');
   };
 
-  
   const handleErrors = (email: string, password: string) => {
     let emailError = '';
 
@@ -61,10 +50,6 @@ const LogIn = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => void
     setFormErrors({ ...formErrors, email: emailError, password: passwordError });
   };
 
-
-
-
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
@@ -73,42 +58,35 @@ const LogIn = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => void
     handleErrors(user.email, value);
   };
 
-
-
-
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-        const {error} = await client.auth.signInWithPassword({
+      const { error } = await client.auth.signInWithPassword({
         email: user.email,
         password: user.password,
-      })
-      if(error) {
+      });
+      if (error) {
         Swal.fire({
           icon: "error",
           title: "Oops...",
           text: "Credenciales incorrectas, por favor, inténtalo de nuevo",
         });
       } else {
-      navigate("/")}
+        navigate("/");
+      }
     } catch (error) {
-      setFormErrors({...formErrors, data: "Alguno de los datos no son correctos"})
+      setFormErrors({ ...formErrors, data: "Alguno de los datos no son correctos" });
     }
   };
 
+  return (
+    <div className='grid grid-cols-1 w-full h-full items-center justify-center overflow-hidden font-lato text-GF-400'>
+      <span className="icon-[streamline--subscription-cashflow] w-16 h-16 ssm:w-24 ssm:h-24 bg-GF-200 place-self-center mb-1"></span>
+      <span className=' font-semibold text-[1.8rem] text-center ssm:text-[2.3rem]'>Gestor Financiero</span>
+      <p className='mx-[60px] font-[520] mt-6 text-center ssm:text-[1.3rem] sm:mx-[20%] lg:mx-[32%]'>Bienvenido a tu gestor financiero, por favor, inicia sesión para administrar tus finanzas</p>
 
-
-
-
-    return (
-        <div className='grid grid-cols-1 w-full h-full items-center justify-center overflow-hidden font-lato text-GF-400'>
-          <span className="icon-[streamline--subscription-cashflow] w-16 h-16 ssm:w-24 ssm:h-24 bg-GF-200 place-self-center mb-1"></span>
-          <span className=' font-semibold text-[1.8rem] text-center ssm:text-[2.3rem]'>Gestor Financiero</span>
-          <p className='mx-[60px] font-[520] mt-6 text-center ssm:text-[1.3rem] sm:mx-[20%] lg:mx-[32%]'>Bienvenido a tu gestor financiero, por favor, inicia sesión para administrar tus finanzas</p>
-
-          <form className="mx-[40px] ssm:mx-[15%] lg:mx-[32%] my-6" onSubmit={handleSubmit}>
+      <form className="mx-[40px] ssm:mx-[15%] lg:mx-[32%] my-6" onSubmit={handleSubmit}>
         <div className="mb-5">
           <label htmlFor="email" className="block mb-1 text-sm">Email</label>
           <input
@@ -138,14 +116,13 @@ const LogIn = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => void
           />
           <p className=" text-xs text-red-600 font-sans mb-5">{formErrors.password}</p>
         </div>
-          <p className=" text-xs text-red-600 font-sans mb-5">{formErrors.data}</p>
+        <p className=" text-xs text-red-600 font-sans mb-5">{formErrors.data}</p>
         <button type="submit" className="text-white bg-[#587DBD] hover:bg-[#5e88d2] font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:bg-slate-300 disabled:cursor-not-allowed" disabled={formErrors.email != "" || formErrors.password != "" || user.email == "" || user.password == "" ? true : false}>Acceder</button>
       </form>
 
-          <p className='font-[520] text-center ssm:text-[1.3rem]'>¿No tienes una cuenta? <button className='text-[#587DBD]' onClick={handleSignupClick}>Crea una aquí</button></p>
-        </div>
-    )
-    }
-    
-  
-    export default LogIn
+      <p className='font-[520] text-center ssm:text-[1.3rem]'>¿No tienes una cuenta? <button className='text-[#587DBD]' onClick={handleSignupClick}>Crea una aquí</button></p>
+    </div>
+  );
+};
+
+export default LogIn;
