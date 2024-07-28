@@ -3,6 +3,7 @@ import { Access } from "./AccessForm";
 
 import { client } from "../../supabase/client";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 //todo setUset function
 
 const pw = /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9]{8,}$/
@@ -80,12 +81,18 @@ const LogIn = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => void
     e.preventDefault();
 
     try {
-        await client.auth.signInWithPassword({
+        const {error} = await client.auth.signInWithPassword({
         email: user.email,
         password: user.password,
       })
-      navigate("/")
-
+      if(error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Credenciales incorrectas, por favor, inténtalo de nuevo",
+        });
+      } else {
+      navigate("/")}
     } catch (error) {
       setFormErrors({...formErrors, data: "Alguno de los datos no son correctos"})
     }

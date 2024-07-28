@@ -2,9 +2,10 @@ import { Access } from "./AccessForm"
 import { useState } from "react";
 import { client } from "../../supabase/client";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 
-const pw = /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9]{8,}$/
+const pw = /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9]{9,}$/
 const em = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]{1,63}@[\w-.]+\.[a-zA-Z]{2,}$/
 
 const SignUp = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => void } ) => {
@@ -43,7 +44,7 @@ const SignUp = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => voi
 
 
     if (!password.match(pw)) {
-      passwordError = 'Introduce una contraseña alfanumérica y mínimo 8 caracteres.';
+      passwordError = 'Introduce una contraseña alfanumérica y mínimo 9 caracteres.';
     }
 
     setFormErrors({ ...formErrors, email: emailError, password: passwordError });
@@ -68,7 +69,7 @@ const SignUp = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => voi
 
   if(formErrors.email == "" && formErrors.password == ""){
     try {
-      await client.auth.signUp({
+      const {error} = await client.auth.signUp({
         email: newUser.email.toLowerCase(),
         password: newUser.password,
         options: {
@@ -77,7 +78,14 @@ const SignUp = ({ onAccessChange }: { onAccessChange: (newAccess: Access) => voi
           }
         }
       })
-      navigate('/')
+      if(error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error.name,
+        });
+      } else {
+      navigate("/")}
     } catch (error) {
       console.log(error)
     }

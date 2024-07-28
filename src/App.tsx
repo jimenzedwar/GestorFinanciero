@@ -19,6 +19,8 @@ client.auth.onAuthStateChange((session) => {
   }
 }) 
 }, [])
+
+const isActiveLogin = location.pathname === "/login"
   return (
     <div className=''>
       <Routes>
@@ -28,7 +30,9 @@ client.auth.onAuthStateChange((session) => {
         <Route path='/login' element={<AccessForm/>}/>
         <Route path='*' element={<NotFound/>}/> //TODO MAKE A PAGE 404
       </Routes>
+      <div className={`${isActiveLogin ? "hidden" :'block'}`}>
       <Navbar/>
+      </div>
       </div>
   )
 }
